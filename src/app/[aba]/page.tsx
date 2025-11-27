@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Edit, Eye, Trash2, Plus, Search } from "lucide-react";
+import { Edit, Eye, Trash2, Plus, Search, Loader2 } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import {
   Dialog,
@@ -215,8 +215,13 @@ export default function RelatosAbaPage() {
                             variant="ghost"
                             size="sm"
                             onClick={() => handleDeleteClick(relato)}
+                            disabled={deleteRelato.isPending}
                           >
-                            <Trash2 className="h-4 w-4 text-red-500" />
+                            {deleteRelato.isPending && relatoToDelete?.numero_relato === relato.numero_relato ? (
+                              <Loader2 className="h-4 w-4 animate-spin text-red-500" />
+                            ) : (
+                              <Trash2 className="h-4 w-4 text-red-500" />
+                            )}
                           </Button>
                         </div>
                       </TableCell>
@@ -243,11 +248,23 @@ export default function RelatosAbaPage() {
             <Button
               variant="outline"
               onClick={() => setDeleteDialogOpen(false)}
+              disabled={deleteRelato.isPending}
             >
               Cancelar
             </Button>
-            <Button variant="destructive" onClick={handleDeleteConfirm}>
-              Excluir
+            <Button 
+              variant="destructive" 
+              onClick={handleDeleteConfirm}
+              disabled={deleteRelato.isPending}
+            >
+              {deleteRelato.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Excluindo...
+                </>
+              ) : (
+                "Excluir"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

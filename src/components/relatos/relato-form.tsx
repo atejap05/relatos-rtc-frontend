@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -129,6 +130,8 @@ export function RelatoForm({ relato, mode, aba }: RelatoFormProps) {
       );
     }
   };
+
+  const isSubmitting = createRelato.isPending || updateRelato.isPending;
 
   return (
     <Form {...form}>
@@ -353,14 +356,28 @@ export function RelatoForm({ relato, mode, aba }: RelatoFormProps) {
         </div>
 
         <div className="flex justify-end gap-4">
-          <Button type="button" variant="outline" onClick={() => router.back()}>
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={() => router.back()}
+            disabled={isSubmitting}
+          >
             Cancelar
           </Button>
           <Button
             type="submit"
-            disabled={createRelato.isPending || updateRelato.isPending}
+            disabled={isSubmitting}
           >
-            {mode === "create" ? "Criar" : "Salvar"} Relato
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {mode === "create" ? "Criando..." : "Salvando..."}
+              </>
+            ) : (
+              <>
+                {mode === "create" ? "Criar" : "Salvar"} Relato
+              </>
+            )}
           </Button>
         </div>
       </form>

@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { type Relato } from '@/types/relato';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 interface ResponsavelChartProps {
   relatos: Relato[];
@@ -10,6 +11,7 @@ interface ResponsavelChartProps {
 }
 
 export function ResponsavelChart({ relatos, isLoading = false }: ResponsavelChartProps) {
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   if (isLoading) {
     return (
@@ -42,13 +44,20 @@ export function ResponsavelChart({ relatos, isLoading = false }: ResponsavelChar
       </CardHeader>
       <CardContent>
         {data.length > 0 ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={data}>
+          <ResponsiveContainer width="100%" height={isMobile ? 250 : 300}>
+            <BarChart data={data} margin={isMobile ? { top: 5, right: 5, left: 0, bottom: 60 } : { top: 5, right: 30, left: 20, bottom: 100 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} />
-              <YAxis />
+              <XAxis 
+                dataKey="name" 
+                angle={isMobile ? -90 : -45} 
+                textAnchor="end" 
+                height={isMobile ? 80 : 100}
+                tick={{ fontSize: isMobile ? 10 : 12 }}
+                interval={0}
+              />
+              <YAxis tick={{ fontSize: isMobile ? 10 : 12 }} />
               <Tooltip />
-              <Legend />
+              <Legend wrapperStyle={{ fontSize: isMobile ? '10px' : '12px' }} />
               <Bar dataKey="value" fill="#3b82f6" name="Quantidade" />
             </BarChart>
           </ResponsiveContainer>

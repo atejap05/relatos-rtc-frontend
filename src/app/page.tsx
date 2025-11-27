@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
+import dynamic from "next/dynamic";
 import { KPICards } from "@/components/dashboard/kpi-cards";
-import { StatusChart } from "@/components/dashboard/status-chart";
-import { ResponsavelChart } from "@/components/dashboard/responsavel-chart";
 import { useAllRelatos } from "@/hooks/useRelatos";
 import { ABAS, type Relato } from "@/types/relato";
 import {
@@ -13,6 +12,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+
+// Lazy load dos gráficos
+const StatusChart = dynamic(() => import("@/components/dashboard/status-chart").then(mod => ({ default: mod.StatusChart })), {
+  loading: () => (
+    <Card>
+      <CardHeader>
+        <Skeleton className="h-6 w-48" />
+      </CardHeader>
+      <CardContent>
+        <Skeleton className="h-[300px] w-full" />
+      </CardContent>
+    </Card>
+  ),
+  ssr: false,
+});
+
+const ResponsavelChart = dynamic(() => import("@/components/dashboard/responsavel-chart").then(mod => ({ default: mod.ResponsavelChart })), {
+  loading: () => (
+    <Card>
+      <CardHeader>
+        <Skeleton className="h-6 w-48" />
+      </CardHeader>
+      <CardContent>
+        <Skeleton className="h-[300px] w-full" />
+      </CardContent>
+    </Card>
+  ),
+  ssr: false,
+});
 
 export default function DashboardPage() {
   const { data: allRelatos = [], isLoading } = useAllRelatos();

@@ -4,6 +4,7 @@ import "./globals.css";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { Header } from "@/components/layout/header";
 import { Toaster } from "sonner";
+import { LoadingIndicator } from "@/components/ui/loading-indicator";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function RootLayout({
             </main>
           </div>
           <Toaster position="top-right" />
+          <LoadingIndicator />
         </QueryProvider>
       </body>
     </html>

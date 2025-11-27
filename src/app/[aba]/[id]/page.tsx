@@ -99,9 +99,22 @@ export default function RelatoDetailsPage() {
               Editar
             </Button>
           </Link>
-          <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)}>
-            <Trash2 className="mr-2 h-4 w-4" />
-            Excluir
+          <Button 
+            variant="destructive" 
+            onClick={() => setDeleteDialogOpen(true)}
+            disabled={deleteRelato.isPending}
+          >
+            {deleteRelato.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Excluindo...
+              </>
+            ) : (
+              <>
+                <Trash2 className="mr-2 h-4 w-4" />
+                Excluir
+              </>
+            )}
           </Button>
         </div>
       </div>
@@ -177,11 +190,26 @@ export default function RelatoDetailsPage() {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+            <Button 
+              variant="outline" 
+              onClick={() => setDeleteDialogOpen(false)}
+              disabled={deleteRelato.isPending}
+            >
               Cancelar
             </Button>
-            <Button variant="destructive" onClick={handleDelete}>
-              Excluir
+            <Button 
+              variant="destructive" 
+              onClick={handleDelete}
+              disabled={deleteRelato.isPending}
+            >
+              {deleteRelato.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Excluindo...
+                </>
+              ) : (
+                "Excluir"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

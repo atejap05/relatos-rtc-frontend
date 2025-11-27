@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { StatusEnum, type Relato } from '@/types/relato';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 const COLORS = {
   [StatusEnum.ABERTA]: '#3b82f6',
@@ -24,6 +25,7 @@ interface StatusChartProps {
 }
 
 export function StatusChart({ relatos, isLoading = false }: StatusChartProps) {
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   if (isLoading) {
     return (
@@ -58,19 +60,19 @@ export function StatusChart({ relatos, isLoading = false }: StatusChartProps) {
       </CardHeader>
       <CardContent>
         {data.length > 0 ? (
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={isMobile ? 250 : 300}>
             <PieChart>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={(props: any) => {
+                label={isMobile ? false : (props: any) => {
                   const name = props.name || '';
                   const percent = props.percent || 0;
                   return `${name}: ${(percent * 100).toFixed(0)}%`;
                 }}
-                outerRadius={80}
+                outerRadius={isMobile ? 60 : 80}
                 fill="#8884d8"
                 dataKey="value"
               >
@@ -79,7 +81,13 @@ export function StatusChart({ relatos, isLoading = false }: StatusChartProps) {
                 ))}
               </Pie>
               <Tooltip />
-              <Legend />
+              <Legend 
+                layout={isMobile ? 'horizontal' : 'vertical'}
+                wrapperStyle={{ 
+                  fontSize: isMobile ? '10px' : '12px',
+                  paddingTop: isMobile ? '10px' : '0'
+                }}
+              />
             </PieChart>
           </ResponsiveContainer>
         ) : (
