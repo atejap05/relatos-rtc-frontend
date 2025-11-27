@@ -1,0 +1,91 @@
+'use client';
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useRelatos } from '@/hooks/useRelatos';
+import { StatusEnum } from '@/types/relato';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+
+const COLORS = {
+  [StatusEnum.ABERTA]: '#3b82f6',
+  [StatusEnum.EM_ANDAMENTO]: '#eab308',
+  [StatusEnum.CONCLUIDA]: '#22c55e',
+  [StatusEnum.CANCELADA]: '#ef4444',
+};
+
+const STATUS_LABELS = {
+  [StatusEnum.ABERTA]: 'Abertos',
+  [StatusEnum.EM_ANDAMENTO]: 'Em Andamento',
+  [StatusEnum.CONCLUIDA]: 'Concluídos',
+  [StatusEnum.CANCELADA]: 'Cancelados',
+};
+
+export function StatusChart() {
+  const { data: relatos = [], isLoading } = useRelatos();
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Distribuição por Status</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[300px] animate-pulse rounded bg-gray-200" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const statusCount = Object.values(StatusEnum).reduce((acc, status) => {
+    acc[status] = relatos.filter((r) => r.status === status).length;
+    return acc;
+  }, {} as Record<StatusEnum, number>);
+
+  const data = Object.entries(statusCount)
+    .filter(([_, count]) => count > 0)
+    .map(([status, count]) => ({
+      name: STATUS_LABELS[status as StatusEnum],
+      value: count,
+      status: status as StatusEnum,
+    }));
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Distribuição por Status</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {data.length > 0 ? (
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={data}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={(props: any) => {
+                  const name = props.name || '';
+                  const percent = props.percent || 0;
+                  return `${name}: ${(percent * 100).toFixed(0)}%`;
+                }}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {data.map((entry) => (
+                  <Cell key={`cell-${entry.status}`} fill={COLORS[entry.status]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="flex h-[300px] items-center justify-center text-gray-500">
+            Nenhum dado disponível
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
