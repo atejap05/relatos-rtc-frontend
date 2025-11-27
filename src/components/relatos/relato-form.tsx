@@ -165,6 +165,7 @@ export function RelatoForm({ relato, mode, aba }: RelatoFormProps) {
                     inputMode="numeric"
                     pattern="[0-9]*"
                     placeholder="1234567"
+                    required
                     {...field}
                     onChange={e => {
                       // Remove qualquer caractere que não seja número
@@ -250,6 +251,7 @@ export function RelatoForm({ relato, mode, aba }: RelatoFormProps) {
               <FormControl>
                 <Input
                   placeholder="Título descritivo do problema..."
+                  required
                   {...field}
                 />
               </FormControl>
@@ -268,6 +270,7 @@ export function RelatoForm({ relato, mode, aba }: RelatoFormProps) {
                 <Textarea
                   placeholder="Descreva detalhadamente o problema, contexto e requisitos..."
                   className="min-h-[120px]"
+                  required
                   {...field}
                 />
               </FormControl>
