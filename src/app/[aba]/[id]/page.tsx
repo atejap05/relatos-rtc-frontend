@@ -5,7 +5,7 @@ import { useRelato, useDeleteRelato } from '@/hooks/useRelatos';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2, ArrowLeft, Loader2 } from 'lucide-react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, notFound } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
@@ -15,17 +15,22 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useState } from 'react';
-import { StatusEnum } from '@/types/relato';
 import { StatusBadge } from '@/components/ui/status-badge';
-
-const ABA_PADRAO = 'Leiaute-RTC';
+import { ABAS, type Aba } from '@/types/relato';
 
 export default function RelatoDetailsPage() {
   const params = useParams();
+  const aba = params.aba as string;
   const id = params.id as string;
   const router = useRouter();
-  const { data: relato, isLoading } = useRelato(ABA_PADRAO, id);
-  const deleteRelato = useDeleteRelato(ABA_PADRAO);
+  
+  // Validar se a aba existe
+  if (!ABAS.includes(aba as Aba)) {
+    notFound();
+  }
+
+  const { data: relato, isLoading } = useRelato(aba, id);
+  const deleteRelato = useDeleteRelato(aba);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const formatDate = (dateString: string | null) => {
@@ -39,12 +44,11 @@ export default function RelatoDetailsPage() {
     });
   };
 
-
   const handleDelete = () => {
     if (relato) {
       deleteRelato.mutate(relato.numero_demanda, {
         onSuccess: () => {
-          router.push(`/${ABA_PADRAO}`);
+          router.push(`/${aba}`);
         },
       });
     }
@@ -65,7 +69,7 @@ export default function RelatoDetailsPage() {
           <h1 className="text-3xl font-bold tracking-tight">Relato não encontrado</h1>
           <p className="text-muted-foreground">O relato solicitado não existe</p>
         </div>
-        <Link href={`/${ABA_PADRAO}`}>
+        <Link href={`/${aba}`}>
           <Button variant="outline">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Voltar para Listagem
@@ -79,17 +83,17 @@ export default function RelatoDetailsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <Link href={`/${ABA_PADRAO}`}>
+          <Link href={`/${aba}`}>
             <Button variant="ghost" size="sm" className="mb-2">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Voltar
             </Button>
           </Link>
           <h1 className="text-3xl font-bold tracking-tight">{relato.titulo_relato}</h1>
-          <p className="text-muted-foreground">Detalhes do relato de teste RTC</p>
+          <p className="text-muted-foreground">Detalhes do relato de teste RTC - {aba}</p>
         </div>
         <div className="flex gap-2">
-          <Link href={`/${ABA_PADRAO}/${relato.numero_demanda}/editar`}>
+          <Link href={`/${aba}/${relato.numero_demanda}/editar`}>
             <Button>
               <Edit className="mr-2 h-4 w-4" />
               Editar

@@ -19,8 +19,10 @@ const STATUS_LABELS = {
   [StatusEnum.CANCELADA]: 'Cancelados',
 };
 
+const ABA_PADRAO = 'Leiaute-RTC';
+
 export function StatusChart() {
-  const { data: relatos = [], isLoading } = useRelatos();
+  const { data: relatos = [], isLoading } = useRelatos(ABA_PADRAO);
 
   if (isLoading) {
     return (

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { Button } from '@/components/ui/button';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -12,26 +12,39 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { StatusEnum, type Relato, type RelatoCreate, type RelatoUpdate } from '@/types/relato';
-import { useCreateRelato, useUpdateRelato } from '@/hooks/useRelatos';
-import { useRouter } from 'next/navigation';
+} from "@/components/ui/select";
+import {
+  StatusEnum,
+  ResponsavelEnum,
+  AmbienteEnum,
+  TipoRelatoEnum,
+  type Relato,
+  type RelatoCreate,
+  type RelatoUpdate,
+} from "@/types/relato";
+import { useCreateRelato, useUpdateRelato } from "@/hooks/useRelatos";
+import { useRouter } from "next/navigation";
 
 const relatoSchema = z.object({
-  numero_demanda: z.string().min(1, 'Número da demanda é obrigatório'),
-  numero_relato: z.string().min(1, 'Número do relato é obrigatório'),
-  titulo_relato: z.string().min(1, 'Título é obrigatório').max(255, 'Título muito longo'),
-  descricao_relato: z.string().min(1, 'Descrição é obrigatória'),
-  responsavel: z.string().min(1, 'Responsável é obrigatório').max(100, 'Nome muito longo'),
+  numero_demanda: z.string().min(1, "Número da demanda é obrigatório"),
+  numero_relato: z.string().min(1, "Número do relato é obrigatório"),
+  tipo_relato: z.nativeEnum(TipoRelatoEnum).optional(),
+  ambiente: z.nativeEnum(AmbienteEnum).optional(),
+  titulo_relato: z
+    .string()
+    .min(1, "Título é obrigatório")
+    .max(255, "Título muito longo"),
+  descricao_relato: z.string().min(1, "Descrição é obrigatória"),
+  responsavel: z.nativeEnum(ResponsavelEnum),
   status: z.nativeEnum(StatusEnum),
 });
 
@@ -39,13 +52,14 @@ type RelatoFormValues = z.infer<typeof relatoSchema>;
 
 interface RelatoFormProps {
   relato?: Relato;
-  mode: 'create' | 'edit';
+  mode: "create" | "edit";
+  aba: string;
 }
 
-export function RelatoForm({ relato, mode }: RelatoFormProps) {
+export function RelatoForm({ relato, mode, aba }: RelatoFormProps) {
   const router = useRouter();
-  const createRelato = useCreateRelato();
-  const updateRelato = useUpdateRelato();
+  const createRelato = useCreateRelato(aba);
+  const updateRelato = useUpdateRelato(aba);
 
   const form = useForm<RelatoFormValues>({
     resolver: zodResolver(relatoSchema),
@@ -53,26 +67,32 @@ export function RelatoForm({ relato, mode }: RelatoFormProps) {
       ? {
           numero_demanda: relato.numero_demanda,
           numero_relato: relato.numero_relato,
+          tipo_relato: relato.tipo_relato || TipoRelatoEnum.ERRO,
+          ambiente: relato.ambiente || AmbienteEnum.HOMOLOGACAO,
           titulo_relato: relato.titulo_relato,
           descricao_relato: relato.descricao_relato,
           responsavel: relato.responsavel,
           status: relato.status,
         }
       : {
-          numero_demanda: '',
-          numero_relato: '',
-          titulo_relato: '',
-          descricao_relato: '',
-          responsavel: '',
+          numero_demanda: "",
+          numero_relato: "",
+          tipo_relato: TipoRelatoEnum.ERRO,
+          ambiente: AmbienteEnum.HOMOLOGACAO,
+          titulo_relato: "",
+          descricao_relato: "",
+          responsavel: ResponsavelEnum.JOEL_ALVES,
           status: StatusEnum.ABERTA,
         },
   });
 
   const onSubmit = async (data: RelatoFormValues) => {
-    if (mode === 'create') {
+    if (mode === "create") {
       const createData: RelatoCreate = {
         numero_demanda: data.numero_demanda,
         numero_relato: data.numero_relato,
+        tipo_relato: data.tipo_relato || TipoRelatoEnum.ERRO,
+        ambiente: data.ambiente || AmbienteEnum.HOMOLOGACAO,
         titulo_relato: data.titulo_relato,
         descricao_relato: data.descricao_relato,
         responsavel: data.responsavel,
@@ -80,12 +100,14 @@ export function RelatoForm({ relato, mode }: RelatoFormProps) {
       };
       createRelato.mutate(createData, {
         onSuccess: () => {
-          router.push('/relatos');
+          router.push(`/${aba}`);
         },
       });
     } else if (relato) {
       const updateData: RelatoUpdate = {
         numero_relato: data.numero_relato,
+        tipo_relato: data.tipo_relato || undefined,
+        ambiente: data.ambiente,
         titulo_relato: data.titulo_relato,
         descricao_relato: data.descricao_relato,
         responsavel: data.responsavel,
@@ -95,7 +117,7 @@ export function RelatoForm({ relato, mode }: RelatoFormProps) {
         { numeroDemanda: relato.numero_demanda, data: updateData },
         {
           onSuccess: () => {
-            router.push('/relatos');
+            router.push(`/${aba}`);
           },
         }
       );
@@ -116,7 +138,7 @@ export function RelatoForm({ relato, mode }: RelatoFormProps) {
                   <Input
                     placeholder="DEM-001"
                     {...field}
-                    disabled={mode === 'edit'}
+                    disabled={mode === "edit"}
                   />
                 </FormControl>
                 <FormDescription>
@@ -142,6 +164,67 @@ export function RelatoForm({ relato, mode }: RelatoFormProps) {
           />
         </div>
 
+        <div className="grid gap-4 md:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="tipo_relato"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tipo do Relato</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o tipo" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value={TipoRelatoEnum.ERRO}>Erro</SelectItem>
+                    <SelectItem value={TipoRelatoEnum.DUVIDA}>
+                      Dúvida
+                    </SelectItem>
+                    <SelectItem value={TipoRelatoEnum.SUGESTAO}>
+                      Sugestão
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="ambiente"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ambiente</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o ambiente" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value={AmbienteEnum.HOMOLOGACAO}>
+                      Homologação
+                    </SelectItem>
+                    <SelectItem value={AmbienteEnum.PRODUCAO}>
+                      Produção
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <FormField
           control={form.control}
           name="titulo_relato"
@@ -149,7 +232,10 @@ export function RelatoForm({ relato, mode }: RelatoFormProps) {
             <FormItem>
               <FormLabel>Título do Relato</FormLabel>
               <FormControl>
-                <Input placeholder="Título descritivo do problema..." {...field} />
+                <Input
+                  placeholder="Título descritivo do problema..."
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -181,9 +267,33 @@ export function RelatoForm({ relato, mode }: RelatoFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Responsável</FormLabel>
-                <FormControl>
-                  <Input placeholder="Nome do responsável" {...field} />
-                </FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o responsável" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value={ResponsavelEnum.JOEL_ALVES}>
+                      Joel Alves
+                    </SelectItem>
+                    <SelectItem value={ResponsavelEnum.RAFAEL_GUTZLAFF}>
+                      Rafael Gutzlaff
+                    </SelectItem>
+                    <SelectItem value={ResponsavelEnum.ELISANE_RODOVANSKI}>
+                      Elisane Rodovanski
+                    </SelectItem>
+                    <SelectItem value={ResponsavelEnum.HERMANO_TOSCANO}>
+                      Hermano Toscano
+                    </SelectItem>
+                    <SelectItem value={ResponsavelEnum.THIAGO_PEREZ}>
+                      Thiago Perez
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -195,7 +305,10 @@ export function RelatoForm({ relato, mode }: RelatoFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Status</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione o status" />
@@ -203,9 +316,15 @@ export function RelatoForm({ relato, mode }: RelatoFormProps) {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value={StatusEnum.ABERTA}>Aberta</SelectItem>
-                    <SelectItem value={StatusEnum.EM_ANDAMENTO}>Em Andamento</SelectItem>
-                    <SelectItem value={StatusEnum.CONCLUIDA}>Concluída</SelectItem>
-                    <SelectItem value={StatusEnum.CANCELADA}>Cancelada</SelectItem>
+                    <SelectItem value={StatusEnum.EM_ANDAMENTO}>
+                      Em Andamento
+                    </SelectItem>
+                    <SelectItem value={StatusEnum.CONCLUIDA}>
+                      Concluída
+                    </SelectItem>
+                    <SelectItem value={StatusEnum.CANCELADA}>
+                      Cancelada
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -215,19 +334,17 @@ export function RelatoForm({ relato, mode }: RelatoFormProps) {
         </div>
 
         <div className="flex justify-end gap-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.back()}
-          >
+          <Button type="button" variant="outline" onClick={() => router.back()}>
             Cancelar
           </Button>
-          <Button type="submit" disabled={createRelato.isPending || updateRelato.isPending}>
-            {mode === 'create' ? 'Criar' : 'Salvar'} Relato
+          <Button
+            type="submit"
+            disabled={createRelato.isPending || updateRelato.isPending}
+          >
+            {mode === "create" ? "Criar" : "Salvar"} Relato
           </Button>
         </div>
       </form>
     </Form>
   );
 }
-

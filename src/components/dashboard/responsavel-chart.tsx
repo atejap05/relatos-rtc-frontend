@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useRelatos } from '@/hooks/useRelatos';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
+const ABA_PADRAO = 'Leiaute-RTC';
+
 export function ResponsavelChart() {
-  const { data: relatos = [], isLoading } = useRelatos();
+  const { data: relatos = [], isLoading } = useRelatos(ABA_PADRAO);
 
   if (isLoading) {
     return (

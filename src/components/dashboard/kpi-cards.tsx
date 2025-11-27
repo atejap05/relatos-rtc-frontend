@@ -5,8 +5,10 @@ import { useRelatos } from "@/hooks/useRelatos";
 import { StatusEnum } from "@/types/relato";
 import { FileText, CheckCircle2, Clock, Users } from "lucide-react";
 
+const ABA_PADRAO = 'Leiaute-RTC';
+
 export function KPICards() {
-  const { data: relatos = [], isLoading } = useRelatos();
+  const { data: relatos = [], isLoading } = useRelatos(ABA_PADRAO);
 
   if (isLoading) {
     return (

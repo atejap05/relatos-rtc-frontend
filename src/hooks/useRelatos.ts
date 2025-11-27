@@ -9,44 +9,46 @@ import { toast } from 'sonner';
 export const relatosKeys = {
   all: ['relatos'] as const,
   lists: () => [...relatosKeys.all, 'list'] as const,
-  list: (filters?: { status?: StatusEnum }) => [...relatosKeys.lists(), filters] as const,
+  list: (aba: string, filters?: { status?: StatusEnum }) => [...relatosKeys.lists(), aba, filters] as const,
   details: () => [...relatosKeys.all, 'detail'] as const,
-  detail: (id: string) => [...relatosKeys.details(), id] as const,
+  detail: (aba: string, id: string) => [...relatosKeys.details(), aba, id] as const,
 };
 
 // Hook para listar todos os relatos
-export function useRelatos() {
+export function useRelatos(aba: string) {
   return useQuery({
-    queryKey: relatosKeys.lists(),
-    queryFn: () => relatosApi.getAll(),
+    queryKey: relatosKeys.list(aba),
+    queryFn: () => relatosApi.getAll(aba),
+    enabled: !!aba,
   });
 }
 
 // Hook para buscar relato por ID
-export function useRelato(numeroDemanda: string) {
+export function useRelato(aba: string, numeroDemanda: string) {
   return useQuery({
-    queryKey: relatosKeys.detail(numeroDemanda),
-    queryFn: () => relatosApi.getById(numeroDemanda),
-    enabled: !!numeroDemanda,
+    queryKey: relatosKeys.detail(aba, numeroDemanda),
+    queryFn: () => relatosApi.getById(aba, numeroDemanda),
+    enabled: !!aba && !!numeroDemanda,
   });
 }
 
 // Hook para filtrar por status
-export function useRelatosByStatus(status: StatusEnum) {
+export function useRelatosByStatus(aba: string, status: StatusEnum) {
   return useQuery({
-    queryKey: relatosKeys.list({ status }),
-    queryFn: () => relatosApi.getByStatus(status),
+    queryKey: relatosKeys.list(aba, { status }),
+    queryFn: () => relatosApi.getByStatus(aba, status),
+    enabled: !!aba,
   });
 }
 
 // Hook para criar relato
-export function useCreateRelato() {
+export function useCreateRelato(aba: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (relato: RelatoCreate) => relatosApi.create(relato),
+    mutationFn: (relato: RelatoCreate) => relatosApi.create(aba, relato),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: relatosKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: relatosKeys.list(aba) });
       toast.success('Relato criado com sucesso!');
     },
     onError: (error: any) => {
@@ -56,15 +58,15 @@ export function useCreateRelato() {
 }
 
 // Hook para atualizar relato
-export function useUpdateRelato() {
+export function useUpdateRelato(aba: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ numeroDemanda, data }: { numeroDemanda: string; data: RelatoUpdate }) =>
-      relatosApi.update(numeroDemanda, data),
+      relatosApi.update(aba, numeroDemanda, data),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: relatosKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: relatosKeys.detail(variables.numeroDemanda) });
+      queryClient.invalidateQueries({ queryKey: relatosKeys.list(aba) });
+      queryClient.invalidateQueries({ queryKey: relatosKeys.detail(aba, variables.numeroDemanda) });
       toast.success('Relato atualizado com sucesso!');
     },
     onError: (error: any) => {
@@ -74,13 +76,13 @@ export function useUpdateRelato() {
 }
 
 // Hook para deletar relato
-export function useDeleteRelato() {
+export function useDeleteRelato(aba: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (numeroDemanda: string) => relatosApi.delete(numeroDemanda),
+    mutationFn: (numeroDemanda: string) => relatosApi.delete(aba, numeroDemanda),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: relatosKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: relatosKeys.list(aba) });
       toast.success('Relato removido com sucesso!');
     },
     onError: (error: any) => {

@@ -5,14 +5,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RelatoForm } from '@/components/relatos/relato-form';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import { useParams } from 'next/navigation';
-
-const ABA_PADRAO = 'Leiaute-RTC';
+import { useParams, notFound } from 'next/navigation';
+import { ABAS, type Aba } from '@/types/relato';
 
 export default function EditarRelatoPage() {
   const params = useParams();
+  const aba = params.aba as string;
   const id = params.id as string;
-  const { data: relato, isLoading } = useRelato(ABA_PADRAO, id);
+  
+  // Validar se a aba existe
+  if (!ABAS.includes(aba as Aba)) {
+    notFound();
+  }
+
+  const { data: relato, isLoading } = useRelato(aba, id);
 
   if (isLoading) {
     return (
@@ -36,7 +42,7 @@ export default function EditarRelatoPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Editar Relato</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Editar Relato - {aba}</h1>
         <p className="text-muted-foreground">Atualize as informações do relato</p>
       </div>
 
@@ -45,7 +51,7 @@ export default function EditarRelatoPage() {
           <CardTitle>Informações do Relato</CardTitle>
         </CardHeader>
         <CardContent>
-          <RelatoForm relato={relato} mode="edit" aba={ABA_PADRAO} />
+          <RelatoForm relato={relato} mode="edit" aba={aba} />
         </CardContent>
       </Card>
     </div>

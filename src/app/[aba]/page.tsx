@@ -2,8 +2,8 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { useRelatos } from "@/hooks/useRelatos";
-import { StatusEnum, type Relato } from "@/types/relato";
+import { useRelatos, useDeleteRelato } from "@/hooks/useRelatos";
+import { StatusEnum, type Relato, ABAS, type Aba } from "@/types/relato";
 import {
   Table,
   TableBody,
@@ -24,7 +24,6 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit, Eye, Trash2, Plus, Search } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { useDeleteRelato } from "@/hooks/useRelatos";
 import {
   Dialog,
   DialogContent,
@@ -33,6 +32,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useParams, notFound } from "next/navigation";
 
 const STATUS_OPTIONS = [
   { value: "all", label: "Todos" },
@@ -42,11 +42,17 @@ const STATUS_OPTIONS = [
   { value: StatusEnum.CANCELADA, label: "Cancelados" },
 ];
 
-const ABA_PADRAO = 'Leiaute-RTC';
+export default function RelatosAbaPage() {
+  const params = useParams();
+  const aba = params.aba as string;
+  
+  // Validar se a aba existe
+  if (!ABAS.includes(aba as Aba)) {
+    notFound();
+  }
 
-export default function RelatosPage() {
-  const { data: relatos = [], isLoading } = useRelatos(ABA_PADRAO);
-  const deleteRelato = useDeleteRelato(ABA_PADRAO);
+  const { data: relatos = [], isLoading } = useRelatos(aba);
+  const deleteRelato = useDeleteRelato(aba);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -96,12 +102,12 @@ export default function RelatosPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Relatos</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Relatos - {aba}</h1>
           <p className="text-muted-foreground">
-            Gerencie todos os relatos de testes RTC
+            Gerencie todos os relatos de testes RTC da aba {aba}
           </p>
         </div>
-        <Link href={`/${ABA_PADRAO}/novo`}>
+        <Link href={`/${aba}/novo`}>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             Novo Relato
@@ -119,7 +125,7 @@ export default function RelatosPage() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
-                  placeholder="Buscar por número, título ou responsável..."
+                  placeholder="Buscar por número, título, tipo, ambiente ou responsável..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -193,13 +199,13 @@ export default function RelatosPage() {
                       <TableCell>{formatDate(relato.data_abertura)}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Link href={`/${ABA_PADRAO}/${relato.numero_demanda}`}>
+                          <Link href={`/${aba}/${relato.numero_demanda}`}>
                             <Button variant="ghost" size="sm">
                               <Eye className="h-4 w-4" />
                             </Button>
                           </Link>
                           <Link
-                            href={`/${ABA_PADRAO}/${relato.numero_demanda}/editar`}
+                            href={`/${aba}/${relato.numero_demanda}/editar`}
                           >
                             <Button variant="ghost" size="sm">
                               <Edit className="h-4 w-4" />
@@ -249,3 +255,4 @@ export default function RelatosPage() {
     </div>
   );
 }
+
