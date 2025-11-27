@@ -36,7 +36,10 @@ import { useRouter } from "next/navigation";
 
 const relatoSchema = z.object({
   numero_demanda: z.string().optional(),
-  numero_relato: z.string().min(1, "Número do relato é obrigatório"),
+  numero_relato: z
+    .string()
+    .min(1, "Número do relato é obrigatório")
+    .regex(/^\d+$/, "Número do relato deve conter apenas números"),
   tipo_relato: z.nativeEnum(TipoRelatoEnum).optional(),
   ambiente: z.nativeEnum(AmbienteEnum).optional(),
   titulo_relato: z
@@ -89,7 +92,10 @@ export function RelatoForm({ relato, mode, aba }: RelatoFormProps) {
   const onSubmit = async (data: RelatoFormValues) => {
     if (mode === "create") {
       const createData: RelatoCreate = {
-        numero_demanda: data.numero_demanda && data.numero_demanda.trim() !== "" ? data.numero_demanda : undefined,
+        numero_demanda:
+          data.numero_demanda && data.numero_demanda.trim() !== ""
+            ? data.numero_demanda
+            : undefined,
         numero_relato: data.numero_relato,
         tipo_relato: data.tipo_relato || TipoRelatoEnum.ERRO,
         ambiente: data.ambiente || AmbienteEnum.HOMOLOGACAO,
@@ -142,7 +148,8 @@ export function RelatoForm({ relato, mode, aba }: RelatoFormProps) {
                   />
                 </FormControl>
                 <FormDescription>
-                  Identificador único da demanda (opcional - será gerado automaticamente se não informado)
+                  Identificador único da demanda (opcional - será gerado
+                  automaticamente se não informado)
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -156,8 +163,20 @@ export function RelatoForm({ relato, mode, aba }: RelatoFormProps) {
               <FormItem>
                 <FormLabel>Número do Relato</FormLabel>
                 <FormControl>
-                  <Input placeholder="RTC-001" {...field} />
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    placeholder="1234567"
+                    {...field}
+                    onChange={e => {
+                      // Remove qualquer caractere que não seja número
+                      const value = e.target.value.replace(/\D/g, "");
+                      field.onChange(value);
+                    }}
+                  />
                 </FormControl>
+                <FormDescription>Apenas números são permitidos</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
