@@ -35,7 +35,7 @@ import { useCreateRelato, useUpdateRelato } from "@/hooks/useRelatos";
 import { useRouter } from "next/navigation";
 
 const relatoSchema = z.object({
-  numero_demanda: z.string().min(1, "Número da demanda é obrigatório"),
+  numero_demanda: z.string().optional(),
   numero_relato: z.string().min(1, "Número do relato é obrigatório"),
   tipo_relato: z.nativeEnum(TipoRelatoEnum).optional(),
   ambiente: z.nativeEnum(AmbienteEnum).optional(),
@@ -89,7 +89,7 @@ export function RelatoForm({ relato, mode, aba }: RelatoFormProps) {
   const onSubmit = async (data: RelatoFormValues) => {
     if (mode === "create") {
       const createData: RelatoCreate = {
-        numero_demanda: data.numero_demanda,
+        numero_demanda: data.numero_demanda && data.numero_demanda.trim() !== "" ? data.numero_demanda : undefined,
         numero_relato: data.numero_relato,
         tipo_relato: data.tipo_relato || TipoRelatoEnum.ERRO,
         ambiente: data.ambiente || AmbienteEnum.HOMOLOGACAO,
@@ -142,7 +142,7 @@ export function RelatoForm({ relato, mode, aba }: RelatoFormProps) {
                   />
                 </FormControl>
                 <FormDescription>
-                  Identificador único da demanda (não pode ser alterado)
+                  Identificador único da demanda (opcional - será gerado automaticamente se não informado)
                 </FormDescription>
                 <FormMessage />
               </FormItem>

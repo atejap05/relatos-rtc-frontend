@@ -1,14 +1,15 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useRelatos } from "@/hooks/useRelatos";
-import { StatusEnum } from "@/types/relato";
+import { StatusEnum, type Relato } from "@/types/relato";
 import { FileText, CheckCircle2, Clock, Users } from "lucide-react";
 
-const ABA_PADRAO = 'Leiaute-RTC';
+interface KPICardsProps {
+  relatos: Relato[];
+  isLoading?: boolean;
+}
 
-export function KPICards() {
-  const { data: relatos = [], isLoading } = useRelatos(ABA_PADRAO);
+export function KPICards({ relatos, isLoading = false }: KPICardsProps) {
 
   if (isLoading) {
     return (

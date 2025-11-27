@@ -38,7 +38,7 @@ export interface Relato {
 }
 
 export interface RelatoCreate {
-  numero_demanda: string;
+  numero_demanda?: string;
   numero_relato: string;
   tipo_relato?: TipoRelatoEnum;
   ambiente?: AmbienteEnum;

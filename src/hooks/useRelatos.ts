@@ -1,8 +1,9 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueries, useMutation, useQueryClient } from '@tanstack/react-query';
 import { relatosApi } from '@/lib/api';
 import type { Relato, RelatoCreate, RelatoUpdate, StatusEnum } from '@/types/relato';
+import { ABAS } from '@/types/relato';
 import { toast } from 'sonner';
 
 // Query keys
@@ -14,13 +15,45 @@ export const relatosKeys = {
   detail: (aba: string, id: string) => [...relatosKeys.details(), aba, id] as const,
 };
 
-// Hook para listar todos os relatos
+// Hook para listar todos os relatos de uma aba específica
 export function useRelatos(aba: string) {
   return useQuery({
     queryKey: relatosKeys.list(aba),
     queryFn: () => relatosApi.getAll(aba),
     enabled: !!aba,
   });
+}
+
+// Hook para buscar relatos de todas as abas
+export function useAllRelatos() {
+  const queries = useQueries({
+    queries: ABAS.map(aba => ({
+      queryKey: relatosKeys.list(aba),
+      queryFn: () => relatosApi.getAll(aba),
+    })),
+  });
+
+  const isLoading = queries.some(query => query.isLoading);
+  const isError = queries.some(query => query.isError);
+  const error = queries.find(query => query.isError)?.error;
+
+  // Combina todos os relatos e adiciona informação da aba de origem
+  const allRelatos: Array<Relato & { aba: string }> = queries
+    .flatMap((query, index) => {
+      const relatos = query.data || [];
+      return relatos.map(relato => ({
+        ...relato,
+        aba: ABAS[index],
+      }));
+    })
+    .filter(Boolean);
+
+  return {
+    data: allRelatos,
+    isLoading,
+    isError,
+    error,
+  };
 }
 
 // Hook para buscar relato por ID

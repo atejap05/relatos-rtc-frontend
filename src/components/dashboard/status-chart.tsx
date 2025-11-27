@@ -1,8 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useRelatos } from '@/hooks/useRelatos';
-import { StatusEnum } from '@/types/relato';
+import { StatusEnum, type Relato } from '@/types/relato';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
 const COLORS = {
@@ -19,10 +18,12 @@ const STATUS_LABELS = {
   [StatusEnum.CANCELADA]: 'Cancelados',
 };
 
-const ABA_PADRAO = 'Leiaute-RTC';
+interface StatusChartProps {
+  relatos: Relato[];
+  isLoading?: boolean;
+}
 
-export function StatusChart() {
-  const { data: relatos = [], isLoading } = useRelatos(ABA_PADRAO);
+export function StatusChart({ relatos, isLoading = false }: StatusChartProps) {
 
   if (isLoading) {
     return (

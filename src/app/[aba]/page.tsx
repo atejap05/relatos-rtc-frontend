@@ -181,8 +181,8 @@ export default function RelatosAbaPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredRelatos.map(relato => (
-                    <TableRow key={relato.numero_demanda}>
+                  {filteredRelatos.map((relato, index) => (
+                    <TableRow key={`${relato.numero_demanda}-${relato.numero_relato}-${index}`}>
                       <TableCell className="font-medium">
                         {relato.numero_demanda}
                       </TableCell>

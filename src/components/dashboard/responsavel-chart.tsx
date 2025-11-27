@@ -1,13 +1,15 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useRelatos } from '@/hooks/useRelatos';
+import { type Relato } from '@/types/relato';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const ABA_PADRAO = 'Leiaute-RTC';
+interface ResponsavelChartProps {
+  relatos: Relato[];
+  isLoading?: boolean;
+}
 
-export function ResponsavelChart() {
-  const { data: relatos = [], isLoading } = useRelatos(ABA_PADRAO);
+export function ResponsavelChart({ relatos, isLoading = false }: ResponsavelChartProps) {
 
   if (isLoading) {
     return (
