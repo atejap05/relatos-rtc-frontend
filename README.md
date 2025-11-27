@@ -43,11 +43,25 @@ frontend/
 
 ### Variáveis de Ambiente
 
+**Para mais detalhes, consulte o arquivo [ENV_VARIABLES.md](./ENV_VARIABLES.md)**
+
+#### Desenvolvimento Local
+
 Crie um arquivo `.env.local` na raiz do projeto:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000/api
 ```
+
+#### Produção (Vercel)
+
+Configure no painel da Vercel:
+
+```env
+NEXT_PUBLIC_API_URL=https://seu-backend.onrender.com/api
+```
+
+**Importante:** Substitua pela URL real do seu backend deployado.
 
 ### Instalação
 
@@ -109,32 +123,52 @@ uvicorn main:app --reload --port 8000
 1. **Conectar Repositório:**
    - Acesse [vercel.com](https://vercel.com)
    - Faça login com GitHub
-   - Clique em "Add New Project"
+   - Clique em "Add New Project" ou "New Project"
    - Selecione o repositório `relatos-rtc-frontend`
+   - Clique em "Import"
 
 2. **Configurar Projeto:**
-   - **Framework Preset:** Next.js (detectado automaticamente)
-   - **Root Directory:** `./` (raiz)
-   - **Build Command:** `npm run build` (padrão)
-   - **Output Directory:** `.next` (padrão)
-   - **Install Command:** `npm install` (padrão)
+   A Vercel detecta automaticamente Next.js, mas verifique:
+   - **Framework Preset:** Next.js ✅ (detectado automaticamente)
+   - **Root Directory:** `./` (raiz) ✅
+   - **Build Command:** `npm run build` ✅ (padrão)
+   - **Output Directory:** `.next` ✅ (padrão)
+   - **Install Command:** `npm install` ✅ (padrão)
+   - **Region:** `São Paulo (gru1)` ou `Washington D.C. (iad1)` (mais próximo)
 
-3. **Variáveis de Ambiente:**
-   - Vá em "Environment Variables"
+3. **Variáveis de Ambiente (CRÍTICO):**
+   **ANTES de fazer o deploy**, configure a variável de ambiente:
+   - Clique em "Environment Variables" antes de fazer o deploy
    - Adicione:
      ```
-     NEXT_PUBLIC_API_URL=https://seu-backend.railway.app/api
+     Name: NEXT_PUBLIC_API_URL
+     Value: https://seu-backend.onrender.com/api
      ```
-   - Substitua `https://seu-backend.railway.app/api` pela URL real do seu backend
+   - **Substitua** `https://seu-backend.onrender.com/api` pela URL real do seu backend
+   - Selecione os ambientes: ✅ Production, ✅ Preview, ✅ Development
+   - Clique em "Save"
+   
+   **Exemplos de URLs do backend:**
+   - Render: `https://relatos-rtc-backend.onrender.com/api`
+   - Railway: `https://relatos-rtc-backend.up.railway.app/api`
 
 4. **Deploy:**
    - Clique em "Deploy"
-   - Aguarde o build completar
+   - Aguarde o build completar (2-5 minutos)
    - A aplicação estará disponível em uma URL como: `https://relatos-rtc-frontend.vercel.app`
 
 5. **Deploy Automático:**
-   - A cada push na branch `main`, um novo deploy será feito automaticamente
-   - Pull Requests geram preview deployments automaticamente
+   - ✅ A cada push na branch `main`, um novo deploy será feito automaticamente
+   - ✅ Pull Requests geram preview deployments automaticamente
+   - ✅ Cada preview tem sua própria URL temporária
+
+6. **Atualizar CORS no Backend:**
+   Após obter a URL da Vercel, atualize o backend:
+   - No Render/Railway, adicione ou atualize a variável `FRONTEND_URL`:
+     ```
+     FRONTEND_URL=https://relatos-rtc-frontend.vercel.app
+     ```
+   - Ou adicione manualmente a URL nas origens permitidas no código do backend
 
 ### Configuração de Domínio Customizado (Opcional)
 
