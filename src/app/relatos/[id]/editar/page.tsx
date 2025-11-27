@@ -15,7 +15,7 @@ export default function EditarRelatoPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -25,7 +25,7 @@ export default function EditarRelatoPage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Relato não encontrado</h1>
-          <p className="text-gray-500">O relato solicitado não existe</p>
+          <p className="text-muted-foreground">O relato solicitado não existe</p>
         </div>
       </div>
     );
@@ -35,7 +35,7 @@ export default function EditarRelatoPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Editar Relato</h1>
-        <p className="text-gray-500">Atualize as informações do relato</p>
+        <p className="text-muted-foreground">Atualize as informações do relato</p>
       </div>
 
       <Card>

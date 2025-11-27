@@ -8,7 +8,7 @@ export default function NovoRelatoPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Novo Relato</h1>
-        <p className="text-gray-500">Crie um novo relato de teste RTC</p>
+        <p className="text-muted-foreground">Crie um novo relato de teste RTC</p>
       </div>
 
       <Card>

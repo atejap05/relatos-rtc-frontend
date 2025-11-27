@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`${inter.variable} font-sans antialiased`}>
         <QueryProvider>
-          <div className="min-h-screen bg-gray-50">
+          <div className="min-h-screen bg-background">
             <Header />
             <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
               {children}

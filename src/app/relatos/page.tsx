@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useMemo } from 'react';
-import Link from 'next/link';
-import { useRelatos } from '@/hooks/useRelatos';
-import { StatusEnum, type Relato } from '@/types/relato';
+import { useState, useMemo } from "react";
+import Link from "next/link";
+import { useRelatos } from "@/hooks/useRelatos";
+import { StatusEnum, type Relato } from "@/types/relato";
 import {
   Table,
   TableBody,
@@ -11,19 +11,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Edit, Eye, Trash2, Plus, Search } from 'lucide-react';
-import { useDeleteRelato } from '@/hooks/useRelatos';
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Edit, Eye, Trash2, Plus, Search } from "lucide-react";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { useDeleteRelato } from "@/hooks/useRelatos";
 import {
   Dialog,
   DialogContent,
@@ -31,33 +32,36 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 
 const STATUS_OPTIONS = [
-  { value: 'all', label: 'Todos' },
-  { value: StatusEnum.ABERTA, label: 'Abertos' },
-  { value: StatusEnum.EM_ANDAMENTO, label: 'Em Andamento' },
-  { value: StatusEnum.CONCLUIDA, label: 'Concluídos' },
-  { value: StatusEnum.CANCELADA, label: 'Cancelados' },
+  { value: "all", label: "Todos" },
+  { value: StatusEnum.ABERTA, label: "Abertos" },
+  { value: StatusEnum.EM_ANDAMENTO, label: "Em Andamento" },
+  { value: StatusEnum.CONCLUIDA, label: "Concluídos" },
+  { value: StatusEnum.CANCELADA, label: "Cancelados" },
 ];
 
 export default function RelatosPage() {
   const { data: relatos = [], isLoading } = useRelatos();
   const deleteRelato = useDeleteRelato();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [relatoToDelete, setRelatoToDelete] = useState<Relato | null>(null);
 
   const filteredRelatos = useMemo(() => {
-    return relatos.filter((relato) => {
+    return relatos.filter(relato => {
       const matchesSearch =
-        relato.numero_demanda.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        relato.numero_demanda
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
         relato.numero_relato.toLowerCase().includes(searchTerm.toLowerCase()) ||
         relato.titulo_relato.toLowerCase().includes(searchTerm.toLowerCase()) ||
         relato.responsavel.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesStatus = statusFilter === 'all' || relato.status === statusFilter;
+      const matchesStatus =
+        statusFilter === "all" || relato.status === statusFilter;
 
       return matchesSearch && matchesStatus;
     });
@@ -80,18 +84,8 @@ export default function RelatosPage() {
   };
 
   const formatDate = (dateString: string | null) => {
-    if (!dateString) return '-';
-    return new Date(dateString).toLocaleDateString('pt-BR');
-  };
-
-  const getStatusBadgeClass = (status: StatusEnum) => {
-    const classes = {
-      [StatusEnum.ABERTA]: 'bg-blue-100 text-blue-800',
-      [StatusEnum.EM_ANDAMENTO]: 'bg-yellow-100 text-yellow-800',
-      [StatusEnum.CONCLUIDA]: 'bg-green-100 text-green-800',
-      [StatusEnum.CANCELADA]: 'bg-red-100 text-red-800',
-    };
-    return classes[status] || 'bg-gray-100 text-gray-800';
+    if (!dateString) return "-";
+    return new Date(dateString).toLocaleDateString("pt-BR");
   };
 
   return (
@@ -99,7 +93,9 @@ export default function RelatosPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Relatos</h1>
-          <p className="text-gray-500">Gerencie todos os relatos de testes RTC</p>
+          <p className="text-muted-foreground">
+            Gerencie todos os relatos de testes RTC
+          </p>
         </div>
         <Link href="/relatos/novo">
           <Button>
@@ -117,11 +113,11 @@ export default function RelatosPage() {
           <div className="flex gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Buscar por número, título ou responsável..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
               </div>
@@ -131,7 +127,7 @@ export default function RelatosPage() {
                 <SelectValue placeholder="Filtrar por status" />
               </SelectTrigger>
               <SelectContent>
-                {STATUS_OPTIONS.map((option) => (
+                {STATUS_OPTIONS.map(option => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
@@ -145,14 +141,17 @@ export default function RelatosPage() {
       <Card>
         <CardHeader>
           <CardTitle>
-            Listagem ({filteredRelatos.length} {filteredRelatos.length === 1 ? 'relato' : 'relatos'})
+            Listagem ({filteredRelatos.length}{" "}
+            {filteredRelatos.length === 1 ? "relato" : "relatos"})
           </CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="py-8 text-center text-gray-500">Carregando...</div>
+            <div className="py-8 text-center text-muted-foreground">
+              Carregando...
+            </div>
           ) : filteredRelatos.length === 0 ? (
-            <div className="py-8 text-center text-gray-500">
+            <div className="py-8 text-center text-muted-foreground">
               Nenhum relato encontrado
             </div>
           ) : (
@@ -170,7 +169,7 @@ export default function RelatosPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredRelatos.map((relato) => (
+                  {filteredRelatos.map(relato => (
                     <TableRow key={relato.numero_demanda}>
                       <TableCell className="font-medium">
                         {relato.numero_demanda}
@@ -181,11 +180,7 @@ export default function RelatosPage() {
                       </TableCell>
                       <TableCell>{relato.responsavel}</TableCell>
                       <TableCell>
-                        <span
-                          className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${getStatusBadgeClass(relato.status)}`}
-                        >
-                          {relato.status}
-                        </span>
+                        <StatusBadge status={relato.status} />
                       </TableCell>
                       <TableCell>{formatDate(relato.data_abertura)}</TableCell>
                       <TableCell className="text-right">
@@ -195,7 +190,9 @@ export default function RelatosPage() {
                               <Eye className="h-4 w-4" />
                             </Button>
                           </Link>
-                          <Link href={`/relatos/${relato.numero_demanda}/editar`}>
+                          <Link
+                            href={`/relatos/${relato.numero_demanda}/editar`}
+                          >
                             <Button variant="ghost" size="sm">
                               <Edit className="h-4 w-4" />
                             </Button>
@@ -223,13 +220,16 @@ export default function RelatosPage() {
           <DialogHeader>
             <DialogTitle>Confirmar exclusão</DialogTitle>
             <DialogDescription>
-              Tem certeza que deseja excluir o relato{' '}
-              <strong>{relatoToDelete?.numero_demanda}</strong>? Esta ação não pode ser
-              desfeita.
+              Tem certeza que deseja excluir o relato{" "}
+              <strong>{relatoToDelete?.numero_demanda}</strong>? Esta ação não
+              pode ser desfeita.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+            >
               Cancelar
             </Button>
             <Button variant="destructive" onClick={handleDeleteConfirm}>
@@ -241,4 +241,3 @@ export default function RelatosPage() {
     </div>
   );
 }
-

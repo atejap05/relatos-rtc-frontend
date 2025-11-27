@@ -29,7 +29,7 @@ export function StatusChart() {
           <CardTitle>Distribuição por Status</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[300px] animate-pulse rounded bg-gray-200" />
+          <div className="h-[300px] animate-pulse rounded bg-muted" />
         </CardContent>
       </Card>
     );
@@ -80,7 +80,7 @@ export function StatusChart() {
             </PieChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex h-[300px] items-center justify-center text-gray-500">
+          <div className="flex h-[300px] items-center justify-center text-muted-foreground">
             Nenhum dado disponível
           </div>
         )}

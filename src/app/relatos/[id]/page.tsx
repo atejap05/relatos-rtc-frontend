@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import { useState } from 'react';
 import { StatusEnum } from '@/types/relato';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 export default function RelatoDetailsPage() {
   const params = useParams();
@@ -36,15 +37,6 @@ export default function RelatoDetailsPage() {
     });
   };
 
-  const getStatusBadgeClass = (status: StatusEnum) => {
-    const classes = {
-      [StatusEnum.ABERTA]: 'bg-blue-100 text-blue-800',
-      [StatusEnum.EM_ANDAMENTO]: 'bg-yellow-100 text-yellow-800',
-      [StatusEnum.CONCLUIDA]: 'bg-green-100 text-green-800',
-      [StatusEnum.CANCELADA]: 'bg-red-100 text-red-800',
-    };
-    return classes[status] || 'bg-gray-100 text-gray-800';
-  };
 
   const handleDelete = () => {
     if (relato) {
@@ -59,7 +51,7 @@ export default function RelatoDetailsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -69,7 +61,7 @@ export default function RelatoDetailsPage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Relato não encontrado</h1>
-          <p className="text-gray-500">O relato solicitado não existe</p>
+          <p className="text-muted-foreground">O relato solicitado não existe</p>
         </div>
         <Link href="/relatos">
           <Button variant="outline">
@@ -92,7 +84,7 @@ export default function RelatoDetailsPage() {
             </Button>
           </Link>
           <h1 className="text-3xl font-bold tracking-tight">{relato.titulo_relato}</h1>
-          <p className="text-gray-500">Detalhes do relato de teste RTC</p>
+          <p className="text-muted-foreground">Detalhes do relato de teste RTC</p>
         </div>
         <div className="flex gap-2">
           <Link href={`/relatos/${relato.numero_demanda}/editar`}>
@@ -115,25 +107,21 @@ export default function RelatoDetailsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-500">Número da Demanda</label>
+              <label className="text-sm font-medium text-muted-foreground">Número da Demanda</label>
               <p className="text-lg font-semibold">{relato.numero_demanda}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-500">Número do Relato</label>
+              <label className="text-sm font-medium text-muted-foreground">Número do Relato</label>
               <p className="text-lg">{relato.numero_relato}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-500">Status</label>
+              <label className="text-sm font-medium text-muted-foreground">Status</label>
               <p>
-                <span
-                  className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${getStatusBadgeClass(relato.status)}`}
-                >
-                  {relato.status}
-                </span>
+                <StatusBadge status={relato.status} />
               </p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-500">Responsável</label>
+              <label className="text-sm font-medium text-muted-foreground">Responsável</label>
               <p className="text-lg">{relato.responsavel}</p>
             </div>
           </CardContent>
@@ -145,11 +133,11 @@ export default function RelatoDetailsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-500">Data de Abertura</label>
+              <label className="text-sm font-medium text-muted-foreground">Data de Abertura</label>
               <p className="text-lg">{formatDate(relato.data_abertura)}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-500">Data de Encerramento</label>
+              <label className="text-sm font-medium text-muted-foreground">Data de Encerramento</label>
               <p className="text-lg">{formatDate(relato.data_encerramento)}</p>
             </div>
           </CardContent>
@@ -161,7 +149,7 @@ export default function RelatoDetailsPage() {
           <CardTitle>Descrição</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="whitespace-pre-wrap text-gray-700">{relato.descricao_relato}</p>
+          <p className="whitespace-pre-wrap text-foreground">{relato.descricao_relato}</p>
         </CardContent>
       </Card>
 

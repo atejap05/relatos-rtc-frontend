@@ -9,7 +9,7 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-gray-500">Visão geral dos relatos de testes RTC</p>
+        <p className="text-muted-foreground">Visão geral dos relatos de testes RTC</p>
       </div>
 
       <KPICards />
