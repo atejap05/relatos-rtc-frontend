@@ -56,12 +56,12 @@ export function useAllRelatos() {
   };
 }
 
-// Hook para buscar relato por ID
-export function useRelato(aba: string, numeroDemanda: string) {
+// Hook para buscar relato por número do relato (chave única)
+export function useRelato(aba: string, numeroRelato: string) {
   return useQuery({
-    queryKey: relatosKeys.detail(aba, numeroDemanda),
-    queryFn: () => relatosApi.getById(aba, numeroDemanda),
-    enabled: !!aba && !!numeroDemanda,
+    queryKey: relatosKeys.detail(aba, numeroRelato),
+    queryFn: () => relatosApi.getByNumeroRelato(aba, numeroRelato),
+    enabled: !!aba && !!numeroRelato,
   });
 }
 
@@ -90,16 +90,16 @@ export function useCreateRelato(aba: string) {
   });
 }
 
-// Hook para atualizar relato
+// Hook para atualizar relato por número do relato (chave única)
 export function useUpdateRelato(aba: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ numeroDemanda, data }: { numeroDemanda: string; data: RelatoUpdate }) =>
-      relatosApi.update(aba, numeroDemanda, data),
+    mutationFn: ({ numeroRelato, data }: { numeroRelato: string; data: RelatoUpdate }) =>
+      relatosApi.updateByNumeroRelato(aba, numeroRelato, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: relatosKeys.list(aba) });
-      queryClient.invalidateQueries({ queryKey: relatosKeys.detail(aba, variables.numeroDemanda) });
+      queryClient.invalidateQueries({ queryKey: relatosKeys.detail(aba, variables.numeroRelato) });
       toast.success('Relato atualizado com sucesso!');
     },
     onError: (error: any) => {
@@ -108,12 +108,12 @@ export function useUpdateRelato(aba: string) {
   });
 }
 
-// Hook para deletar relato
+// Hook para deletar relato por número do relato (chave única)
 export function useDeleteRelato(aba: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (numeroDemanda: string) => relatosApi.delete(aba, numeroDemanda),
+    mutationFn: (numeroRelato: string) => relatosApi.deleteByNumeroRelato(aba, numeroRelato),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: relatosKeys.list(aba) });
       toast.success('Relato removido com sucesso!');

@@ -23,9 +23,15 @@ export const relatosApi = {
     return response.data;
   },
 
-  // Buscar relato por ID
+  // Buscar relato por ID (numero_demanda - mantido para compatibilidade)
   getById: async (aba: string, numeroDemanda: string): Promise<Relato> => {
     const response = await api.get<Relato>(`/${aba}/relatos/${numeroDemanda}`);
+    return response.data;
+  },
+
+  // Buscar relato por número do relato (chave única)
+  getByNumeroRelato: async (aba: string, numeroRelato: string): Promise<Relato> => {
+    const response = await api.get<Relato>(`/${aba}/relatos/por-relato/${numeroRelato}`);
     return response.data;
   },
 
@@ -35,15 +41,26 @@ export const relatosApi = {
     return response.data;
   },
 
-  // Atualizar relato
+  // Atualizar relato (numero_demanda - mantido para compatibilidade)
   update: async (aba: string, numeroDemanda: string, relato: RelatoUpdate): Promise<Relato> => {
     const response = await api.put<Relato>(`/${aba}/relatos/${numeroDemanda}`, relato);
     return response.data;
   },
 
-  // Deletar relato
+  // Atualizar relato por número do relato (chave única)
+  updateByNumeroRelato: async (aba: string, numeroRelato: string, relato: RelatoUpdate): Promise<Relato> => {
+    const response = await api.put<Relato>(`/${aba}/relatos/por-relato/${numeroRelato}`, relato);
+    return response.data;
+  },
+
+  // Deletar relato (numero_demanda - mantido para compatibilidade)
   delete: async (aba: string, numeroDemanda: string): Promise<void> => {
     await api.delete(`/${aba}/relatos/${numeroDemanda}`);
+  },
+
+  // Deletar relato por número do relato (chave única)
+  deleteByNumeroRelato: async (aba: string, numeroRelato: string): Promise<void> => {
+    await api.delete(`/${aba}/relatos/por-relato/${numeroRelato}`);
   },
 
   // Filtrar por status

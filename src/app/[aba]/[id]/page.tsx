@@ -46,7 +46,7 @@ export default function RelatoDetailsPage() {
 
   const handleDelete = () => {
     if (relato) {
-      deleteRelato.mutate(relato.numero_demanda, {
+      deleteRelato.mutate(relato.numero_relato, {
         onSuccess: () => {
           router.push(`/${aba}`);
         },
@@ -93,7 +93,7 @@ export default function RelatoDetailsPage() {
           <p className="text-muted-foreground">Detalhes do relato de teste RTC - {aba}</p>
         </div>
         <div className="flex gap-2">
-          <Link href={`/${aba}/${relato.numero_demanda}/editar`}>
+          <Link href={`/${aba}/${relato.numero_relato}/editar`}>
             <Button>
               <Edit className="mr-2 h-4 w-4" />
               Editar
@@ -172,7 +172,7 @@ export default function RelatoDetailsPage() {
           <DialogHeader>
             <DialogTitle>Confirmar exclusão</DialogTitle>
             <DialogDescription>
-              Tem certeza que deseja excluir o relato <strong>{relato.numero_demanda}</strong>?
+              Tem certeza que deseja excluir o relato <strong>{relato.numero_relato}</strong>?
               Esta ação não pode ser desfeita.
             </DialogDescription>
           </DialogHeader>

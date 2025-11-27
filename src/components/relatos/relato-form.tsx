@@ -114,7 +114,7 @@ export function RelatoForm({ relato, mode, aba }: RelatoFormProps) {
         status: data.status,
       };
       updateRelato.mutate(
-        { numeroDemanda: relato.numero_demanda, data: updateData },
+        { numeroRelato: relato.numero_relato, data: updateData },
         {
           onSuccess: () => {
             router.push(`/${aba}`);

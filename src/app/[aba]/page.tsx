@@ -84,7 +84,7 @@ export default function RelatosAbaPage() {
 
   const handleDeleteConfirm = () => {
     if (relatoToDelete) {
-      deleteRelato.mutate(relatoToDelete.numero_demanda, {
+      deleteRelato.mutate(relatoToDelete.numero_relato, {
         onSuccess: () => {
           setDeleteDialogOpen(false);
           setRelatoToDelete(null);
@@ -199,13 +199,13 @@ export default function RelatosAbaPage() {
                       <TableCell>{formatDate(relato.data_abertura)}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Link href={`/${aba}/${relato.numero_demanda}`}>
+                          <Link href={`/${aba}/${relato.numero_relato}`}>
                             <Button variant="ghost" size="sm">
                               <Eye className="h-4 w-4" />
                             </Button>
                           </Link>
                           <Link
-                            href={`/${aba}/${relato.numero_demanda}/editar`}
+                            href={`/${aba}/${relato.numero_relato}/editar`}
                           >
                             <Button variant="ghost" size="sm">
                               <Edit className="h-4 w-4" />
@@ -235,7 +235,7 @@ export default function RelatosAbaPage() {
             <DialogTitle>Confirmar exclusão</DialogTitle>
             <DialogDescription>
               Tem certeza que deseja excluir o relato{" "}
-              <strong>{relatoToDelete?.numero_demanda}</strong>? Esta ação não
+              <strong>{relatoToDelete?.numero_relato}</strong>? Esta ação não
               pode ser desfeita.
             </DialogDescription>
           </DialogHeader>
