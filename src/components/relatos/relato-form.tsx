@@ -147,10 +147,7 @@ export function RelatoForm({ relato, mode, aba }: RelatoFormProps) {
                     disabled={mode === "edit"}
                   />
                 </FormControl>
-                <FormDescription>
-                  Identificador único da demanda (opcional - será gerado
-                  automaticamente se não informado)
-                </FormDescription>
+                <FormDescription>Identificador demanda</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
