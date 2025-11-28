@@ -44,8 +44,8 @@ export function ResponsavelChart({ relatos, isLoading = false }: ResponsavelChar
       </CardHeader>
       <CardContent>
         {data.length > 0 ? (
-          <ResponsiveContainer width="100%" height={isMobile ? 250 : 300}>
-            <BarChart data={data} margin={isMobile ? { top: 5, right: 5, left: 0, bottom: 60 } : { top: 5, right: 30, left: 20, bottom: 100 }}>
+          <ResponsiveContainer width="100%" height={isMobile ? 250 : 500}>
+            <BarChart data={data} margin={isMobile ? { top: 10, right: 5, left: 0, bottom: 60 } : { top: 25, right: 30, left: 20, bottom: 100 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
                 dataKey="name" 

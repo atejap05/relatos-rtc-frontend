@@ -165,8 +165,7 @@ export default function RelatosAbaPage() {
               Nenhum relato encontrado
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
+            <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Nº Demanda</TableHead>
@@ -229,7 +228,6 @@ export default function RelatosAbaPage() {
                   ))}
                 </TableBody>
               </Table>
-            </div>
           )}
         </CardContent>
       </Card>

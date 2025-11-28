@@ -60,7 +60,7 @@ export function StatusChart({ relatos, isLoading = false }: StatusChartProps) {
       </CardHeader>
       <CardContent>
         {data.length > 0 ? (
-          <ResponsiveContainer width="100%" height={isMobile ? 250 : 300}>
+          <ResponsiveContainer width="100%" height={isMobile ? 250 : 400}>
             <PieChart>
               <Pie
                 data={data}

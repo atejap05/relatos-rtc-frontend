@@ -76,44 +76,46 @@ export default function DashboardPage() {
   }, [allRelatos]);
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Visão geral dos relatos de testes RTC
-            {selectedAba !== "Todas" && (
-              <span className="ml-2 font-medium text-foreground">
-                - Aba: {selectedAba}
-              </span>
-            )}
-          </p>
-        </div>
-        <Select value={selectedAba} onValueChange={setSelectedAba}>
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Filtrar por aba" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Todas">
-              Todas ({statsByAba["Todas"] || 0})
-            </SelectItem>
-            {ABAS.map(aba => (
-              <SelectItem key={aba} value={aba}>
-                {aba} ({statsByAba[aba] || 0})
+    <div className="mx-auto ">
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+            <p className="text-muted-foreground">
+              Visão geral dos relatos de testes RTC
+              {selectedAba !== "Todas" && (
+                <span className="ml-2 font-medium text-foreground">
+                  - Aba: {selectedAba}
+                </span>
+              )}
+            </p>
+          </div>
+          <Select value={selectedAba} onValueChange={setSelectedAba}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Filtrar por aba" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Todas">
+                Todas ({statsByAba["Todas"] || 0})
               </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+              {ABAS.map(aba => (
+                <SelectItem key={aba} value={aba}>
+                  {aba} ({statsByAba[aba] || 0})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      <KPICards relatos={relatosForComponents} isLoading={isLoading} />
+        <KPICards relatos={relatosForComponents} isLoading={isLoading} />
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <StatusChart relatos={relatosForComponents} isLoading={isLoading} />
-        <ResponsavelChart
-          relatos={relatosForComponents}
-          isLoading={isLoading}
-        />
+        <div className="grid gap-4 md:grid-cols-2">
+          <StatusChart relatos={relatosForComponents} isLoading={isLoading} />
+          <ResponsavelChart
+            relatos={relatosForComponents}
+            isLoading={isLoading}
+          />
+        </div>
       </div>
     </div>
   );
